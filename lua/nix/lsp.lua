@@ -63,5 +63,13 @@ vim.lsp.config('tsserver', {
 	root_markers = { 'package.json', 'tsconfig.json', 'jsconfig.json', '.git' },
 })
 
+-- C (clangd)
+vim.lsp.config('clangd', {
+	on_attach = on_attach,
+	cmd = { mason_cmd('clangd') },
+	filetypes = { 'c', 'cpp', 'objc', 'objcpp' },
+	root_markers = { 'compile_commands.json', 'compile_flags.txt', '.git' },
+})
+
 -- Enable both (names must MATCH the first arg to vim.lsp.config)
 vim.lsp.enable({ 'lua_ls', 'tsserver' })
