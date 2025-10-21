@@ -1,10 +1,12 @@
-vim.keymap.set('n', '<leader>ct', function()
-    local output = vim.fn.system("echo | copilot status 2>/dev/null | grep 'Enabled'")
-    if output == "" then
-        vim.cmd("Copilot enable")
-        vim.notify("Copilot Enabled 🟢", vim.log.levels.INFO)
-    else
-        vim.cmd("Copilot disable")
-        vim.notify("Copilot Disabled 🔴", vim.log.levels.WARN)
-    end
-end, { desc = 'Toggle Copilot (with status)' })
+-- Enable Copilot globally + attach to buffer
+vim.keymap.set('n', '<leader>ce', function()
+    vim.cmd("Copilot enable")
+    vim.cmd("Copilot enable buffer") -- ensure this buffer is attached
+    vim.notify("Copilot Enabled 🟢", vim.log.levels.INFO, { title = "GitHub Copilot" })
+end, { desc = 'Enable Copilot' })
+
+-- Disable Copilot globally
+vim.keymap.set('n', '<leader>cd', function()
+    vim.cmd("Copilot disable")
+    vim.notify("Copilot Disabled 🔴", vim.log.levels.WARN, { title = "GitHub Copilot" })
+end, { desc = 'Disable Copilot' })
