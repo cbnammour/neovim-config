@@ -1,19 +1,32 @@
--- lua/nix/lsp.lua (Neovim 0.11+)
-local mason_path = vim.fn.stdpath("data") .. "/mason/bin"
+-- lua/nix/lsp.lua  (Neovim 0.11+)
 
+-- If Mason is installed, prefer its binaries; otherwise fall back to system PATH
+local function mason_cmd(name)
+	local path = vim.fn.stdpath("data") .. "/mason/bin/" .. name
+	return (vim.fn.executable(path) == 1) and path or name
+end
+
+-- Per-buffer keymaps
 local function on_attach(_, bufnr)
-	local map = function(m, l, r, d) vim.keymap.set(m, l, r, { buffer = bufnr, desc = d }) end
+	local map = function(m, lhs, rhs, desc) vim.keymap.set(m, lhs, rhs, { buffer = bufnr, desc = desc }) end
 	map('n', 'gd', vim.lsp.buf.definition, 'LSP: definition')
+	map('n', 'gD', vim.lsp.buf.declaration, 'LSP: declaration')
 	map('n', 'gr', vim.lsp.buf.references, 'LSP: references')
+	map('n', 'gi', vim.lsp.buf.implementation, 'LSP: implementation')
 	map('n', 'K', vim.lsp.buf.hover, 'LSP: hover')
 	map('n', '<leader>rn', vim.lsp.buf.rename, 'LSP: rename')
 	map('n', '<leader>ca', vim.lsp.buf.code_action, 'LSP: code action')
 	map('n', '[d', vim.diagnostic.goto_prev, 'Prev diagnostic')
 	map('n', ']d', vim.diagnostic.goto_next, 'Next diagnostic')
-	if vim.lsp.inlay_hint then pcall(vim.lsp.inlay_hint.enable, true, { bufnr = bufnr }) end
+
+	-- inlay hints (handle both 0.10 and 0.11+ signatures safely)
+	if vim.lsp.inlay_hint and type(vim.lsp.inlay_hint.enable) == 'function' then
+		local ok = pcall(vim.lsp.inlay_hint.enable, true, { bufnr = bufnr })
+		if not ok then pcall(vim.lsp.inlay_hint.enable, bufnr, true) end
+	end
 end
 
--- format on save if server supports it
+-- Optional: format on save (only if the server supports it)
 vim.api.nvim_create_autocmd('BufWritePre', {
 	group = vim.api.nvim_create_augroup('LspFormatOnSave', { clear = true }),
 	callback = function(args)
@@ -26,10 +39,12 @@ vim.api.nvim_create_autocmd('BufWritePre', {
 	end,
 })
 
--- Lua
+-- Lua (lua-language-server)
 vim.lsp.config('lua_ls', {
 	on_attach = on_attach,
-	cmd = { mason_path .. 'lua-language-server' },
+	cmd = { mason_cmd('lua-language-server') },
+	filetypes = { 'lua' },
+	root_markers = { '.luarc.json', '.luarc.jsonc', '.git' }, -- markers to detect project root
 	settings = {
 		Lua = {
 			runtime = { version = 'LuaJIT' },
@@ -40,12 +55,13 @@ vim.lsp.config('lua_ls', {
 	},
 })
 
--- TypeScript / JavaScript
+-- TypeScript / JavaScript (typescript-language-server)
 vim.lsp.config('tsserver', {
 	on_attach = on_attach,
-	cmd = { mason_path .. 'typescript-language-server', '--stdio' },
+	cmd = { mason_cmd('typescript-language-server'), '--stdio' },
 	filetypes = { 'typescript', 'typescriptreact', 'javascript', 'javascriptreact' },
 	root_markers = { 'package.json', 'tsconfig.json', 'jsconfig.json', '.git' },
 })
 
+-- Enable both (names must MATCH the first arg to vim.lsp.config)
 vim.lsp.enable({ 'lua_ls', 'tsserver' })
