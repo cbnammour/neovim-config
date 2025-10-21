@@ -1,4 +1,6 @@
 -- lua/nix/lsp.lua (Neovim 0.11+)
+local mason_path = vim.fn.stdpath("data") .. "/mason/bin"
+
 local function on_attach(_, bufnr)
 	local map = function(m, l, r, d) vim.keymap.set(m, l, r, { buffer = bufnr, desc = d }) end
 	map('n', 'gd', vim.lsp.buf.definition, 'LSP: definition')
@@ -27,7 +29,7 @@ vim.api.nvim_create_autocmd('BufWritePre', {
 -- Lua
 vim.lsp.config('lua_ls', {
 	on_attach = on_attach,
-	cmd = { 'lua-language-server' },
+	cmd = { mason_path .. 'lua-language-server' },
 	settings = {
 		Lua = {
 			runtime = { version = 'LuaJIT' },
@@ -41,7 +43,7 @@ vim.lsp.config('lua_ls', {
 -- TypeScript / JavaScript
 vim.lsp.config('tsserver', {
 	on_attach = on_attach,
-	cmd = { 'typescript-language-server', '--stdio' },
+	cmd = { mason_path .. 'typescript-language-server', '--stdio' },
 	filetypes = { 'typescript', 'typescriptreact', 'javascript', 'javascriptreact' },
 	root_markers = { 'package.json', 'tsconfig.json', 'jsconfig.json', '.git' },
 })
