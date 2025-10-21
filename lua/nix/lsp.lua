@@ -1,66 +1,49 @@
--- lua/nix/lsp.lua  (Neovim 0.11+)
--- LSP servers: Lua (lua_ls) and TypeScript/JavaScript (tsserver)
-
--- -------------------------------
--- Common on_attach: keymaps + inlay hints
+-- lua/nix/lsp.lua (Neovim 0.11+)
 local function on_attach(_, bufnr)
-  local map = function(mode, lhs, rhs, desc)
-    vim.keymap.set(mode, lhs, rhs, { buffer = bufnr, desc = desc })
-  end
-
-  map('n', 'gd', vim.lsp.buf.definition,        'LSP: Go to definition')
-  map('n', 'gr', vim.lsp.buf.references,        'LSP: References')
-  map('n', 'gD', vim.lsp.buf.declaration,       'LSP: Declaration')
-  map('n', 'gi', vim.lsp.buf.implementation,    'LSP: Implementation')
-  map('n', 'K',  vim.lsp.buf.hover,             'LSP: Hover')
-  map('n', '<leader>rn', vim.lsp.buf.rename,    'LSP: Rename symbol')
-  map('n', '<leader>ca', vim.lsp.buf.code_action,'LSP: Code action')
-  map('n', '[d', vim.diagnostic.goto_prev,      'Prev diagnostic')
-  map('n', ']d', vim.diagnostic.goto_next,      'Next diagnostic')
-
-  if vim.lsp.inlay_hint then pcall(vim.lsp.inlay_hint.enable, true, { bufnr = bufnr }) end
+	local map = function(m, l, r, d) vim.keymap.set(m, l, r, { buffer = bufnr, desc = d }) end
+	map('n', 'gd', vim.lsp.buf.definition, 'LSP: definition')
+	map('n', 'gr', vim.lsp.buf.references, 'LSP: references')
+	map('n', 'K', vim.lsp.buf.hover, 'LSP: hover')
+	map('n', '<leader>rn', vim.lsp.buf.rename, 'LSP: rename')
+	map('n', '<leader>ca', vim.lsp.buf.code_action, 'LSP: code action')
+	map('n', '[d', vim.diagnostic.goto_prev, 'Prev diagnostic')
+	map('n', ']d', vim.diagnostic.goto_next, 'Next diagnostic')
+	if vim.lsp.inlay_hint then pcall(vim.lsp.inlay_hint.enable, true, { bufnr = bufnr }) end
 end
 
--- Optional: format on save
+-- format on save if server supports it
 vim.api.nvim_create_autocmd('BufWritePre', {
-  group = vim.api.nvim_create_augroup('LspFormatOnSave', { clear = true }),
-  callback = function(args)
-    local clients = vim.lsp.get_clients({ bufnr = args.buf })
-    for _, c in ipairs(clients) do
-      if c.server_capabilities and c.server_capabilities.documentFormattingProvider then
-        vim.lsp.buf.format({ bufnr = args.buf, timeout_ms = 2000 })
-        break
-      end
-    end
-  end,
+	group = vim.api.nvim_create_augroup('LspFormatOnSave', { clear = true }),
+	callback = function(args)
+		for _, c in ipairs(vim.lsp.get_clients({ bufnr = args.buf })) do
+			if c.server_capabilities and c.server_capabilities.documentFormattingProvider then
+				vim.lsp.buf.format({ bufnr = args.buf, timeout_ms = 2000 })
+				break
+			end
+		end
+	end,
 })
 
--- -------------------------------
--- Lua LSP
+-- Lua
 vim.lsp.config('lua_ls', {
-  on_attach = on_attach,
-  cmd = { 'lua-language-server' },
-  settings = {
-    Lua = {
-      runtime = { version = 'LuaJIT' },
-      diagnostics = { globals = { 'vim' } },
-      workspace = { checkThirdParty = false },
-      telemetry = { enable = false },
-    }
-  },
+	on_attach = on_attach,
+	cmd = { 'lua-language-server' },
+	settings = {
+		Lua = {
+			runtime = { version = 'LuaJIT' },
+			diagnostics = { globals = { 'vim' } },
+			workspace = { checkThirdParty = false },
+			telemetry = { enable = false },
+		}
+	},
 })
 
--- -------------------------------
--- TypeScript / JavaScript LSP
+-- TypeScript / JavaScript
 vim.lsp.config('tsserver', {
-  on_attach = on_attach,
-  cmd = { 'typescript-language-server', '--stdio' },
-  filetypes = { 'typescript','typescriptreact','javascript','javascriptreact' },
-  root_markers = { 'package.json','tsconfig.json','jsconfig.json','.git' },
-  -- formatting usually done by external tools (Prettier, Biome)
+	on_attach = on_attach,
+	cmd = { 'typescript-language-server', '--stdio' },
+	filetypes = { 'typescript', 'typescriptreact', 'javascript', 'javascriptreact' },
+	root_markers = { 'package.json', 'tsconfig.json', 'jsconfig.json', '.git' },
 })
 
--- -------------------------------
--- Enable both
 vim.lsp.enable({ 'lua_ls', 'tsserver' })
-
