@@ -25,128 +25,165 @@ A modern Neovim configuration with LSP support, fuzzy finding, AI code completio
 
 ### Core Functionality
 
-- **Modern Neovim 0.11+** configuration
-- **Packer.nvim** for plugin management
-- **LSP** support with Mason for language servers
-- **Tree-sitter** for syntax highlighting
-- **Telescope** for fuzzy finding
-- **GitHub Copilot** for AI code completion
-- **Rose Pine** color scheme with transparency
+- Modern Neovim 0.11+ configuration
+- Packer.nvim for plugin management
+- LSP support with Mason for language servers
+- Tree-sitter for syntax highlighting
+- Telescope for fuzzy finding
+- GitHub Copilot for AI code completion
+- Rose Pine color scheme with transparency
+- LSP autocompletion powered by nvim-cmp (with LSP, snippets, buffer, and path sources)
 
 ### Language Support
 
-- **Lua** (lua-language-server)
-- **TypeScript/JavaScript** (typescript-language-server)
-- **C/C++** (clangd)
+- Lua (lua-language-server)
+- TypeScript/JavaScript (typescript-language-server)
+- C/C++ (clangd)
 
 ## ⌨️ Custom Keymaps
 
 ### Leader Key
 
-- **Leader**: `<Space>` (spacebar)
+- Leader: `<Space>` (spacebar)
 
 ### General Navigation
 
-| Keymap | Action | Description |
-|--------|--------|-------------|
-| `<leader>pv` | `vim.cmd.Ex` | Open file explorer |
+| Keymap        | Action       | Description            |
+|---------------|--------------|------------------------|
+| `<leader>pv`  | `vim.cmd.Ex` | Open file explorer     |
 
 ### Telescope (Fuzzy Finding)
 
-| Keymap | Action | Description |
-|--------|--------|-------------|
-| `<leader>pf` | `builtin.find_files` | Find files |
-| `<C-p>` | `builtin.git_files` | Find files in git |
-| `<leader>ps` | `builtin.grep_string` | Search for string in files |
+| Keymap        | Action                  | Description               |
+|---------------|-------------------------|---------------------------|
+| `<leader>pf`  | `builtin.find_files`    | Find files                |
+| `<C-p>`       | `builtin.git_files`     | Find files in git         |
+| `<leader>ps`  | `builtin.grep_string`   | Search for string in files|
 
 ### LSP (Language Server Protocol)
 
-| Keymap | Action | Description |
-|--------|--------|-------------|
-| `gd` | `vim.lsp.buf.definition` | Go to definition |
-| `gD` | `vim.lsp.buf.declaration` | Go to declaration |
-| `gr` | `vim.lsp.buf.references` | Show references |
-| `gi` | `vim.lsp.buf.implementation` | Go to implementation |
-| `K` | `vim.lsp.buf.hover` | Show hover information |
-| `<leader>rn` | `vim.lsp.buf.rename` | Rename symbol |
-| `<leader>ca` | `vim.lsp.buf.code_action` | Show code actions |
-| `[d` | `vim.diagnostic.goto_prev` | Go to previous diagnostic |
-| `]d` | `vim.diagnostic.goto_next` | Go to next diagnostic |
+| Keymap       | Action                         | Description                |
+|--------------|--------------------------------|----------------------------|
+| `gd`         | `vim.lsp.buf.definition`       | Go to definition           |
+| `gD`         | `vim.lsp.buf.declaration`      | Go to declaration          |
+| `gr`         | `vim.lsp.buf.references`       | Show references            |
+| `gi`         | `vim.lsp.buf.implementation`   | Go to implementation       |
+| `K`          | `vim.lsp.buf.hover`            | Show hover information     |
+| `<leader>rn` | `vim.lsp.buf.rename`           | Rename symbol              |
+| `<leader>ca` | `vim.lsp.buf.code_action`      | Show code actions          |
+| `[d`         | `vim.diagnostic.goto_prev`     | Previous diagnostic        |
+| `]d`         | `vim.diagnostic.goto_next`     | Next diagnostic            |
+
+### LSP Autocompletion (nvim-cmp)
+
+The configuration adds LSP-powered autocompletion using nvim-cmp, integrating with Neovim’s built-in LSP client. It combines suggestions from:
+- Active language servers (via `cmp-nvim-lsp`)
+- Snippets (via `LuaSnip`)
+- Current buffer words
+- File system paths
+- Optional icons/kinds (via `lspkind`)
+
+Completion keybindings (Insert mode unless noted):
+- `<C-Space>` — Manually trigger completion
+- `<C-n>` / `<C-p>` — Select next/previous item
+- `<C-d>` / `<C-f>` — Scroll completion docs up/down
+- `<C-e>` — Abort/close the completion menu
+- `<CR>` — Confirm selection (accept the highlighted item)
+- `<Tab>` — Next item when the menu is visible; otherwise jump to next snippet placeholder
+- `<S-Tab>` — Previous item when the menu is visible; otherwise jump to previous snippet placeholder
+
+Tip: Neovim’s built-in LSP omni-completion is also available via `<C-x><C-o>` in Insert mode.
 
 ### GitHub Copilot
 
-| Keymap | Action | Description |
-|--------|--------|-------------|
-| `<C-l>` | Accept suggestion | Accept Copilot suggestion |
-| `<M-]>` | Next suggestion | Cycle to next suggestion |
-| `<M-[>` | Previous suggestion | Cycle to previous suggestion |
-| `<C-]>` | Dismiss suggestion | Hide current suggestion |
-| `<leader>ce` | Enable Copilot | Enable Copilot globally |
-| `<leader>cd` | Disable Copilot | Disable Copilot globally |
+| Keymap       | Action               | Description                 |
+|--------------|----------------------|-----------------------------|
+| `<C-l>`      | Accept suggestion    | Accept Copilot suggestion   |
+| `<M-]>`      | Next suggestion      | Cycle to next suggestion    |
+| `<M-[>`      | Previous suggestion  | Cycle to previous suggestion|
+| `<C-]>`      | Dismiss suggestion   | Hide current suggestion     |
+| `<leader>ce` | Enable Copilot       | Enable Copilot globally     |
+| `<leader>cd` | Disable Copilot      | Disable Copilot globally    |
 
 ## 🔧 Configuration Details
 
 ### Vim Options (`lua/nix/set.lua`)
 
-- **Line numbers**: Absolute and relative line numbers enabled
-- **Indentation**: 4 spaces, smart indenting, expand tabs
-- **Search**: Incremental search, no highlight after search
-- **Files**: No swap/backup files, persistent undo enabled
-- **UI**: True color support, 8-line scroll offset, 80-column color guide
-- **Performance**: 50ms update time
+- Line numbers: Absolute and relative line numbers enabled
+- Indentation: 4 spaces, smart indenting, expand tabs
+- Search: Incremental search, no highlight after search
+- Files: No swap/backup files, persistent undo enabled
+- UI: True color support, 8-line scroll offset, 80-column color guide
+- Performance: 50ms update time
 
 ### LSP Configuration (`lua/nix/lsp.lua`)
 
-- **Mason integration**: Prefers Mason binaries over system PATH
-- **Auto-formatting**: Format on save for supported languages
-- **Inlay hints**: Enabled for better code understanding
-- **Language servers**:
-  - **Lua**: lua-language-server with Neovim-specific settings
-  - **TypeScript/JavaScript**: typescript-language-server
-  - **C/C++**: clangd
+- Mason integration: Prefers Mason binaries over system PATH
+- Auto-formatting: Format on save for supported languages
+- Inlay hints: Enabled for better code understanding
+- Language servers:
+  - Lua: lua-language-server with Neovim-specific settings
+  - TypeScript/JavaScript: typescript-language-server
+  - C/C++: clangd
+
+### LSP Autocompletion (nvim-cmp)
+
+- Engine: `hrsh7th/nvim-cmp` with `hrsh7th/cmp-nvim-lsp` capabilities
+- Snippets: `L3MON4D3/LuaSnip` with `saadparwaiz1/cmp_luasnip`
+- Additional sources: `cmp-buffer`, `cmp-path`
+- UI polish (optional): `onsails/lspkind.nvim` for symbols/icons
+- Keymaps: See the “LSP Autocompletion (nvim-cmp)” section above
 
 ### Color Scheme (`after/plugin/colors.lua`)
 
-- **Theme**: Rose Pine with transparency
-- **Background**: Transparent (works with terminal transparency)
-- **Floating windows**: Transparent background
+- Theme: Rose Pine with transparency
+- Background: Transparent (works with terminal transparency)
+- Floating windows: Transparent background
 
 ## 📦 Plugins
 
 ### Core Plugins
 
-1. **wbthomason/packer.nvim** - Plugin manager
-2. **nvim-telescope/telescope.nvim** - Fuzzy finder
-3. **nvim-lua/plenary.nvim** - Telescope dependency
-4. **rose-pine/neovim** - Color scheme
-5. **nvim-treesitter/nvim-treesitter** - Syntax highlighting
-6. **williamboman/mason.nvim** - LSP installer
-7. **zbirenbaum/copilot.lua** - GitHub Copilot integration
+1. `wbthomason/packer.nvim` — Plugin manager
+2. `nvim-telescope/telescope.nvim` — Fuzzy finder
+3. `nvim-lua/plenary.nvim` — Telescope dependency
+4. `rose-pine/neovim` — Color scheme
+5. `nvim-treesitter/nvim-treesitter` — Syntax highlighting
+6. `williamboman/mason.nvim` — LSP installer
+7. `zbirenbaum/copilot.lua` — GitHub Copilot integration
+8. `hrsh7th/nvim-cmp` — Completion engine
+9. `hrsh7th/cmp-nvim-lsp` — LSP completion source
+10. `L3MON4D3/LuaSnip` — Snippet engine
+11. `saadparwaiz1/cmp_luasnip` — Snippet completion source
+12. `hrsh7th/cmp-buffer` — Buffer words completion source
+13. `hrsh7th/cmp-path` — Filesystem path completion source
+14. `onsails/lspkind.nvim` — Completion item icons (optional)
 
 ### Plugin Configuration
 
-- **Telescope**: Configured with git file finding and string searching
-- **Rose Pine**: Set as default colorscheme with transparency
-- **Tree-sitter**: Auto-updates on installation
-- **Mason**: Basic setup for LSP server management
-- **Copilot**: Minimal UI, auto-trigger enabled, custom keymaps
+- Telescope: Configured with git file finding and string searching
+- Rose Pine: Set as default colorscheme with transparency
+- Tree-sitter: Auto-updates on installation
+- Mason: Basic setup for LSP server management
+- Copilot: Minimal UI, auto-trigger enabled, custom keymaps
+- Completion: nvim-cmp integrated with LSP + snippets, buffer, and path sources; intuitive insert-mode keybindings
 
 ## 🛠️ Installation
 
-1. **Install Neovim 0.11+**
-2. **Clone this repository**:
+1. Install Neovim 0.11+
+2. Clone this repository:
 
    ```bash
    git clone <your-repo-url> ~/.config/nvim
    ```
 
-3. **Install plugins**:
+3. Install plugins:
 
    ```vim
    :PackerSync
    ```
 
-4. **Install LSP servers** (via Mason):
+4. Install LSP servers (via Mason):
 
    ```vim
    :Mason
@@ -154,7 +191,7 @@ A modern Neovim configuration with LSP support, fuzzy finding, AI code completio
 
 ## 🎨 Color Scheme
 
-The configuration uses **Rose Pine** with transparency support. The theme automatically applies transparent backgrounds to:
+The configuration uses Rose Pine with transparency support. The theme automatically applies transparent backgrounds to:
 
 - Normal text
 - Floating windows
@@ -164,46 +201,47 @@ The configuration uses **Rose Pine** with transparency support. The theme automa
 
 ### Supported Languages
 
-- **Lua**: Full Neovim API support
-- **TypeScript/JavaScript**: React support included
-- **C/C++**: Clangd with compile commands support
+- Lua: Full Neovim API support
+- TypeScript/JavaScript: React support included
+- C/C++: Clangd with compile commands support
 
 ### LSP Features Enabled
 
-- **Go to definition/declaration**
-- **Find references**
-- **Hover information**
-- **Code actions**
-- **Rename symbols**
-- **Diagnostic navigation**
-- **Auto-formatting on save**
-- **Inlay hints**
+- Go to definition/declaration
+- Find references
+- Hover information
+- Code actions
+- Rename symbols
+- Diagnostic navigation
+- Auto-formatting on save
+- Inlay hints
+- Autocompletion (via nvim-cmp)
 
 ## 🤖 AI Integration
 
 ### GitHub Copilot Configuration
 
-- **Auto-trigger**: Suggestions appear as you type
-- **Debounce**: 75ms delay for performance
-- **File types**: Enabled for all file types including markdown and git commits
-- **Keymaps**: Custom keymaps for accepting, cycling, and dismissing suggestions
-- **Toggle**: Easy enable/disable with leader key combinations
+- Auto-trigger: Suggestions appear as you type
+- Debounce: 75ms delay for performance
+- File types: Enabled for all file types including markdown and git commits
+- Keymaps: Custom keymaps for accepting, cycling, and dismissing suggestions
+- Toggle: Easy enable/disable with leader key combinations
 
 ## 📝 Notes
 
-- **Leader key**: Spacebar (`<Space>`)
-- **Local leader**: Spacebar (`<Space>`)
-- **Undo directory**: `~/.vim/undodir`
-- **Color column**: 80 characters
-- **Scroll offset**: 8 lines
-- **Update time**: 50ms for better responsiveness
+- Leader key: Spacebar (`<Space>`)
+- Local leader: Spacebar (`<Space>`)
+- Undo directory: `~/.vim/undodir`
+- Color column: 80 characters
+- Scroll offset: 8 lines
+- Update time: 50ms for better responsiveness
 
 ## 🔄 Maintenance
 
-- **Update plugins**: `:PackerSync`
-- **Update LSP servers**: `:Mason`
-- **Recompile**: `:PackerCompile` (if needed)
-- **Clean unused plugins**: `:PackerClean`
+- Update plugins: `:PackerSync`
+- Update LSP servers: `:Mason`
+- Recompile: `:PackerCompile` (if needed)
+- Clean unused plugins: `:PackerClean`
 
 ---
 
