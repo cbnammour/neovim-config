@@ -51,6 +51,7 @@ A modern Neovim configuration with LSP support, fuzzy finding, AI code completio
 | Keymap        | Action       | Description            |
 |---------------|--------------|------------------------|
 | `<leader>pv`  | `vim.cmd.Ex` | Open file explorer     |
+| `<leader>fmt` | `vim.lsp.buf.format()` | Format code with LSP |
 
 ### Telescope (Fuzzy Finding)
 
