@@ -31,9 +31,9 @@ return require('packer').startup(function(use)
                     auto_trigger = true, -- show as you type
                     debounce = 75,
                     keymap = {
-                        accept = "<C-l>", -- accept suggestion
-                        next = "<M-]>", -- next suggestion
-                        prev = "<M-[>", -- previous suggestion
+                        accept = "<C-l>",  -- accept suggestion
+                        next = "<M-]>",    -- next suggestion
+                        prev = "<M-[>",    -- previous suggestion
                         dismiss = "<C-]>", -- hide
                         -- accept_word = false,   -- you can map these if you want:
                         -- accept_line = false,
@@ -55,8 +55,15 @@ return require('packer').startup(function(use)
 
     -- install with npm
 
-    use({ "iamcco/markdown-preview.nvim", run = "cd app && npm install", setup = function() vim.g.mkdp_filetypes = {
-            "markdown" } end, ft = { "markdown" }, })
+    use({
+        "iamcco/markdown-preview.nvim",
+        run = "cd app && npm install",
+        setup = function()
+            vim.g.mkdp_filetypes = {
+                "markdown" }
+        end,
+        ft = { "markdown" },
+    })
 
     -- Completion core + sources
     use 'hrsh7th/nvim-cmp'
@@ -68,4 +75,15 @@ return require('packer').startup(function(use)
     use { 'L3MON4D3/LuaSnip', tag = 'v2.*', run = 'make install_jsregexp' }
     use 'saadparwaiz1/cmp_luasnip'
     use 'rafamadriz/friendly-snippets'
+
+    -- Parethesis automatic closing
+    use {
+        "windwp/nvim-autopairs",
+        config = function()
+            require("nvim-autopairs").setup({
+                check_ts = true, -- enable Tree-sitter integration for smarter pairs
+                fast_wrap = {},
+            })
+        end
+    }
 end)
