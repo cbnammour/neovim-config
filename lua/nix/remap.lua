@@ -10,4 +10,4 @@ end, { desc = "Format code" })
 vim.keymap.set("i", "jj", "<Esc>")
 -- set a tiemout for escape sequences and enable timeout
 vim.o.timeout = true
-vim.o.timeoutlen = 300
+vim.o.timeoutlen = 500

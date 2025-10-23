@@ -79,5 +79,14 @@ vim.lsp.config('clangd', {
     root_markers = { 'compile_commands.json', 'compile_flags.txt', '.git' },
 })
 
+-- Go (gopls)
+vim.lsp.config('gopls', {
+    on_attach = on_attach,
+    capabilities = capabilities,
+    cmd = { mason_cmd('gopls') },
+    filetypes = { 'go', 'gomod' },
+    root_markers = { 'go.mod', '.git' },
+})
+
 -- Enable both (names must MATCH the first arg to vim.lsp.config)
 vim.lsp.enable({ 'lua_ls', 'tsserver', 'clangd' })
