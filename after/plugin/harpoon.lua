@@ -7,3 +7,5 @@ vim.keymap.set('n', '<C-h>', function() ui.nav_file(1) end, { desc = "Harpoon: G
 vim.keymap.set('n', '<C-j>', function() ui.nav_file(2) end, { desc = "Harpoon: Go to file 2" })
 vim.keymap.set('n', '<C-k>', function() ui.nav_file(3) end, { desc = "Harpoon: Go to file 3" })
 vim.keymap.set('n', '<C-l>', function() ui.nav_file(4) end, { desc = "Harpoon: Go to file 4" })
+-- Clear all markers
+vim.keymap.set('n', '<leader>hc', mark.clear_all, { desc = "Harpoon: Clear all marks" })
