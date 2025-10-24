@@ -98,5 +98,14 @@ vim.lsp.config('nimlangserver', {
     root_markers = { 'nim.cfg', '.git' },
 })
 
+-- odin language server odin-language-server from mason
+
+vim.lsp.config('ols', {
+    on_attach = on_attach,
+    capabilities = capabilities,
+    cmd = { mason_cmd('ols') },
+    filetypes = { 'odin' },
+    root_markers = { 'odin.mod', '.git' },
+})
 -- Enable both (names must MATCH the first arg to vim.lsp.config)
-vim.lsp.enable({ 'lua_ls', 'tsserver', 'clangd', 'gopls', 'nimlangserver' })
+vim.lsp.enable({ 'lua_ls', 'tsserver', 'clangd', 'gopls', 'nimlangserver', 'ols' })
