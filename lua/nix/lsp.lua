@@ -88,5 +88,15 @@ vim.lsp.config('gopls', {
     root_markers = { 'go.mod', '.git' },
 })
 
+
+-- nim language server nimlanguageserver from mason
+vim.lsp.config('nimlangserver', {
+    on_attach = on_attach,
+    capabilities = capabilities,
+    cmd = { mason_cmd('nimlangserver') },
+    filetypes = { 'nim' },
+    root_markers = { 'nim.cfg', '.git' },
+})
+
 -- Enable both (names must MATCH the first arg to vim.lsp.config)
-vim.lsp.enable({ 'lua_ls', 'tsserver', 'clangd' })
+vim.lsp.enable({ 'lua_ls', 'tsserver', 'clangd', 'gopls', 'nimlangserver' })
